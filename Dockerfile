@@ -8,4 +8,4 @@ COPY . .
 ENV FLASK_CONFIG=production
 ENV PYTHONUNBUFFERED=1
 EXPOSE 5000
-CMD ["sh", "-c", "gunicorn --workers 1 --threads 4 --worker-class gthread -b 0.0.0.0:${PORT:-5000} --timeout 120 run:app"]
+CMD ["sh", "-c", "flask --app run init-db && flask --app run seed-demo && gunicorn --workers 1 --threads 4 --worker-class gthread -b 0.0.0.0:${PORT:-5000} --timeout 120 run:app"]
