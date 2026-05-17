@@ -63,6 +63,12 @@ def create_app(config_name: str | None = None) -> Flask:
     def not_found(_e):
         return render_template("errors/404.html"), 404
 
+    @app.errorhandler(500)
+    def handle_500(e):
+        import traceback
+        tb = traceback.format_exc()
+        return f"<h1>Internal Server Error</h1><pre>{tb}</pre>", 500
+
     return app
 
 
