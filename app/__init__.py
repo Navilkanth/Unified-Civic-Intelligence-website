@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, g, render_template, jsonify
+from flask import Flask, g, jsonify
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
 from app.extensions import cors, db, jwt, migrate, socketio
@@ -57,17 +57,17 @@ def create_app(config_name: str | None = None) -> Flask:
 
     @app.errorhandler(403)
     def forbidden(_e):
-        return render_template("errors/403.html"), 403
+        return jsonify({"error": "Forbidden"}), 403
 
     @app.errorhandler(404)
     def not_found(_e):
-        return render_template("errors/404.html"), 404
+        return jsonify({"error": "Not Found"}), 404
 
     @app.errorhandler(500)
     def handle_500(e):
         import traceback
         tb = traceback.format_exc()
-        return f"<h1>Internal Server Error</h1><pre>{tb}</pre>", 500
+        return jsonify({"error": "Internal Server Error", "traceback": tb}), 500
 
     return app
 

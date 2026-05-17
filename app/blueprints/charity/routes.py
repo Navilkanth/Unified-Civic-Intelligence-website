@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, g, flash, redirect, render_template, url_for
+from flask import Blueprint, request, jsonify, g
 
 from app.extensions import db
 from app.models import (
@@ -162,93 +162,4 @@ def api_add_activity():
     return jsonify({"message": "Volunteer activity successfully logged on trust ledger!"}), 201
 
 
-# ── Legacy HTML routes ────────────────────────────────────────────────────────
 
-@bp.get("/")
-def hub():
-    campaigns = Campaign.query.filter_by(is_active=True).order_by(Campaign.id.desc()).all()
-    total_raised = sum(float(c.raised_amount or 0) for c in campaigns)
-    beneficiaries = Beneficiary.query.count()
-    return render_template("charity/hub.html", campaigns=campaigns, total_raised=total_raised, beneficiaries=beneficiaries)
-
-
-@bp.route("/welfare/new", methods=["GET", "POST"])
-@login_required
-def welfare_new():
-    if request.method == "POST":
-        rtype = (request.form.get("request_type") or "medical").lower()
-        narrative = (request.form.get("narrative") or "").strip()
-        if not narrative:
-            flash("Please describe your situation.", "error")
-            return render_template("charity/welfare_form.html")
-        try:
-            wt = WelfareRequestType(rtype)
-        except ValueError:
-            wt = WelfareRequestType.MEDICAL
-        hints = welfare_hints(narrative)
-        wr = WelfareRequest(
-            user_id=g.current_user.id,
-            request_type=wt,
-            narrative=narrative,
-            ai_scheme_suggestions=str(hints),
-        )
-        db.session.add(wr)
-        log_audit(g.current_user.id, "welfare_request", wt.value)
-        db.session.commit()
-        flash("Welfare request captured. AI suggestions attached for reviewer triage.", "success")
-        return redirect(url_for("charity.hub"))
-    return render_template("charity/welfare_form.html")
-
-
-@bp.route("/donate", methods=["GET", "POST"])
-@login_required
-def donate():
-    campaigns = Campaign.query.filter_by(is_active=True).all()
-    if request.method == "POST":
-        cid = int(request.form.get("campaign_id") or 0)
-        amount = float(request.form.get("amount") or 0)
-        anon = request.form.get("anonymous") == "on"
-        if not cid or amount <= 0:
-            flash("Select a campaign and valid amount.", "error")
-            return render_template("charity/donate.html", campaigns=campaigns)
-        camp = Campaign.query.get_or_404(cid)
-        camp.raised_amount = float(camp.raised_amount or 0) + amount
-        db.session.add(Donation(
-            donor_id=g.current_user.id,
-            campaign_id=cid,
-            amount=amount,
-            is_anonymous=anon,
-            ledger_ref=f"LDG-{camp.id}-{g.current_user.id}",
-        ))
-        db.session.add(TrustLedgerEntry(
-            entry_type="donation",
-            reference=f"campaign:{cid}",
-            amount=amount,
-            metadata_json='{"channel": "web"}',
-        ))
-        log_audit(g.current_user.id, "donation", str(amount))
-        db.session.commit()
-        flash("Thank you. Donation recorded on the public trust ledger.", "success")
-        return redirect(url_for("charity.hub"))
-    return render_template("charity/donate.html", campaigns=campaigns)
-
-
-@bp.get("/html/sponsors")
-def sponsors():
-    rows = Sponsor.query.order_by(Sponsor.id.desc()).limit(30).all()
-    return render_template("charity/sponsors.html", sponsors=rows)
-
-
-@bp.get("/html/transparency")
-def transparency():
-    campaigns = Campaign.query.filter_by(is_active=True).all()
-    total_raised = sum(float(c.raised_amount or 0) for c in campaigns)
-    total_beneficiaries = sum(int(c.beneficiary_count or 0) for c in campaigns)
-    ledger = TrustLedgerEntry.query.order_by(TrustLedgerEntry.id.desc()).limit(30).all()
-    return render_template("charity/transparency.html", campaigns=campaigns, total_raised=total_raised,
-                           total_beneficiaries=total_beneficiaries, ledger=ledger)
-
-
-@bp.get("/html/volunteer-activity")
-def volunteer_activity():
-    return render_template("charity/volunteer_activity.html")

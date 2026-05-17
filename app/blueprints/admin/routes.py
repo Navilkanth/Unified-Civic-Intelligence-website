@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, request
 
 from app.extensions import db
 from app.models import (
@@ -161,18 +161,4 @@ def api_activities():
     })
 
 
-# ── Legacy HTML routes (kept for compatibility) ──────────────────────────────
 
-@bp.get("/")
-@login_required
-@roles_required(UserRole.ADMIN)
-def dashboard():
-    stats = {
-        "users": User.query.count(),
-        "complaints": Complaint.query.count(),
-        "welfare": WelfareRequest.query.count(),
-        "volunteers": VolunteerProfile.query.count(),
-        "donations": Donation.query.count(),
-    }
-    recent_complaints = Complaint.query.order_by(Complaint.created_at.desc()).limit(15).all()
-    return render_template("admin/dashboard.html", stats=stats, recent_complaints=recent_complaints)
