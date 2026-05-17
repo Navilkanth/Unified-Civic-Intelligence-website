@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Land & Patta Protection Complaints</h1>
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-4">
+        <label for="citizen_name" class="block text-gray-700">Your Name</label>
+        <input type="text" id="citizen_name" name="citizen_name" class="w-full border border-gray-300 px-4 py-2">
+    </div>
+    <div class="mb-4">
+        <label for="survey_number" class="block text-gray-700">Survey Number</label>
+        <input type="text" id="survey_number" name="survey_number" class="w-full border border-gray-300 px-4 py-2">
+    </div>
+    <div class="mb-4">
+        <label for="description" class="block text-gray-700">Description</label>
+        <textarea id="description" name="description" class="w-full border border-gray-300 px-4 py-2"></textarea>
+    </div>
+    <div class="mb-4">
+        <label for="geo_location" class="block text-gray-700">Geo-Location</label>
+        <input type="text" id="geo_location" name="geo_location" class="w-full border border-gray-300 px-4 py-2">
+    </div>
+    <div class="mb-4">
+        <label for="evidence" class="block text-gray-700">Upload Evidence</label>
+        <input type="file" id="evidence" name="evidence" class="w-full border border-gray-300 px-4 py-2">
+    </div>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2">Submit Complaint</button>
+</form>
+
+<h2 class="mt-8">Submitted Complaints</h2>
+<table class="table-auto w-full border-collapse border border-gray-300">
+    <thead>
+        <tr>
+            <th class="border border-gray-300 px-4 py-2">Citizen Name</th>
+            <th class="border border-gray-300 px-4 py-2">Survey Number</th>
+            <th class="border border-gray-300 px-4 py-2">Status</th>
+            <th class="border border-gray-300 px-4 py-2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td class="border border-gray-300 px-4 py-2">{{ complaint.citizen_name }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ complaint.survey_number }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ complaint.status }}</td>
+            <td class="border border-gray-300 px-4 py-2">
+                <a href="/governance/land-complaints/{{ complaint.id }}" class="text-blue-500">View Details</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Volunteer profile{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+  <h1 class="font-display text-2xl text-civic-navy mb-6">Singapadai registration</h1>
+  <form method="post" class="space-y-4 text-sm">
+    <input name="district" value="{{ profile.district if profile else '' }}" placeholder="District" class="w-full rounded-lg border border-slate-300 px-3 py-2">
+    <input name="ward_code" value="{{ profile.ward_code if profile else '' }}" placeholder="Ward code" class="w-full rounded-lg border border-slate-300 px-3 py-2">
+    <input name="booth" value="{{ profile.booth if profile else '' }}" placeholder="Booth" class="w-full rounded-lg border border-slate-300 px-3 py-2">
+    <textarea name="skills" rows="3" placeholder="Skills" class="w-full rounded-lg border border-slate-300 px-3 py-2">{{ profile.skills if profile else '' }}</textarea>
+    <input name="availability" value="{{ profile.availability if profile else '' }}" placeholder="Availability" class="w-full rounded-lg border border-slate-300 px-3 py-2">
+    <button type="submit" class="w-full py-2.5 rounded-lg bg-civic-teal text-white font-semibold">Save profile</button>
+  </form>
+</div>
+{% endblock %}

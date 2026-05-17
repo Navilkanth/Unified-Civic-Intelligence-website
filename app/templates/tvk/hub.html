@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}TVK Singapadai{% endblock %}
+{% block content %}
+<h1 class="font-display text-3xl text-civic-navy mb-2">TVK Singapadai workspace</h1>
+<p class="text-slate-600 mb-8">Cadre news, events, internal accountability, membership, and election readiness.</p>
+<div class="flex flex-wrap gap-3 mb-10 text-sm">
+  <a class="px-3 py-2 rounded-lg bg-civic-navy text-white" href="{{ url_for('tvk.events') }}">Events & rallies</a>
+  <a class="px-3 py-2 rounded-lg border border-slate-300" href="{{ url_for('tvk.volunteer_register') }}">Volunteer profile</a>
+  <a class="px-3 py-2 rounded-lg border border-slate-300" href="{{ url_for('tvk.membership') }}">Membership card</a>
+  <a class="px-3 py-2 rounded-lg border border-slate-300" href="{{ url_for('tvk.tasks') }}">Tasks</a>
+  <a class="px-3 py-2 rounded-lg border border-slate-300" href="{{ url_for('tvk.gamification') }}">Gamification</a>
+  <a class="px-3 py-2 rounded-lg border border-slate-300" href="{{ url_for('tvk.party_complaint') }}">Internal complaint</a>
+  <a class="px-3 py-2 rounded-lg border border-amber-300 text-amber-900" href="{{ url_for('tvk.war_room') }}">Election war room</a>
+  {% if current_user and current_user.role.value in ['admin','volunteer'] %}
+  <a class="px-3 py-2 rounded-lg bg-civic-teal text-white" href="{{ url_for('tvk.news_manage') }}">Post news</a>
+  {% endif %}
+</div>
+<h2 class="font-display text-xl mb-4">Live updates</h2>
+<div class="space-y-3">
+  {% for n in news %}
+  <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <p class="text-xs text-civic-teal font-semibold">{{ n.district or 'All districts' }} · {{ n.created_at.strftime('%Y-%m-%d') if n.created_at else '' }}</p>
+    <h3 class="font-display text-lg text-civic-navy">{{ n.title }}</h3>
+    <p class="text-sm text-slate-600 mt-1">{{ n.body or '' }}</p>
+  </article>
+  {% else %}
+  <p class="text-slate-600">No announcements yet. Authorized cadre can publish.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Complaint Details</h1>
+
+<p><strong>Citizen Name:</strong> {{ complaint.citizen_name }}</p>
+<p><strong>Complaint Type:</strong> {{ complaint.complaint_type }}</p>
+<p><strong>Description:</strong> {{ complaint.description }}</p>
+<p><strong>Status:</strong> {{ complaint.status }}</p>
+
+{% if complaint.evidence_path %}
+<p><strong>Evidence:</strong> <a href="/{{ complaint.evidence_path }}" target="_blank">View Evidence</a></p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Public Work Development Plans</h1>
+<table class="table-auto w-full border-collapse border border-gray-300">
+    <thead>
+        <tr>
+            <th class="border border-gray-300 px-4 py-2">Plan Name</th>
+            <th class="border border-gray-300 px-4 py-2">Description</th>
+            <th class="border border-gray-300 px-4 py-2">Affected Areas</th>
+            <th class="border border-gray-300 px-4 py-2">Timeline</th>
+            <th class="border border-gray-300 px-4 py-2">Purpose</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plan in plans %}
+        <tr>
+            <td class="border border-gray-300 px-4 py-2">{{ plan.name }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ plan.description }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ plan.affected_areas }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ plan.timeline }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ plan.purpose }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

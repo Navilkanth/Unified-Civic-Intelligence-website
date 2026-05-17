@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Contact — {{ ward.name_en }}{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <h1 class="font-display text-3xl text-civic-navy">{{ ward.name_en }}</h1>
+  <p class="text-slate-500">{{ ward.name_ta }}</p>
+  {% if contact %}
+  <dl class="mt-6 space-y-3 text-sm">
+    <div><dt class="text-slate-500">Office</dt><dd class="font-semibold">{{ contact.office_phone }}</dd></div>
+    <div><dt class="text-slate-500">Emergency</dt><dd class="font-semibold">{{ contact.emergency_phone }}</dd></div>
+    <div><dt class="text-slate-500">Hours (EN)</dt><dd>{{ contact.office_hours_en }}</dd></div>
+    <div><dt class="text-slate-500">நேரம் (TA)</dt><dd>{{ contact.office_hours_ta }}</dd></div>
+  </dl>
+  {% endif %}
+  <a href="{{ url_for('governance.new_appointment') }}?ward_id={{ ward.id }}" class="inline-block mt-6 px-4 py-2 rounded-lg bg-civic-teal text-white text-sm font-semibold">Request appointment</a>
+</div>
+{% endblock %}

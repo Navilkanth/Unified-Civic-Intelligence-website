@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Appointment{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+  <h1 class="font-display text-2xl text-civic-navy mb-6">Request councillor appointment</h1>
+  <form method="post" class="space-y-4 text-sm">
+    <div>
+      <label class="font-semibold">Ward office</label>
+      <select name="ward_id" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+        {% for w in wards %}
+        <option value="{{ w.id }}" {% if default_ward_id == w.id %}selected{% endif %}>{{ w.code }} — {{ w.name_en }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="font-semibold">Preferred slot</label>
+      <input name="preferred_slot" placeholder="e.g. Week of 20 May, mornings" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+    </div>
+    <div>
+      <label class="font-semibold">Concern summary</label>
+      <textarea name="concern" rows="4" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"></textarea>
+    </div>
+    <button type="submit" class="w-full py-2.5 rounded-lg bg-civic-teal text-white font-semibold">Send request</button>
+  </form>
+</div>
+{% endblock %}

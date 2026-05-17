@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Donate - Secure Welfare Fund{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto py-12">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-extrabold text-civic-navy mb-4">Make a Contribution</h1>
+        <p class="text-lg text-gray-600">Your donation goes directly into our public trust ledger. Support an active campaign and make a difference today.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden relative">
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500"></div>
+        
+        <div class="p-8 sm:p-12">
+            <form method="post" action="{{ url_for('charity.donate') }}" class="space-y-6">
+                
+                <!-- Campaign Selection -->
+                <div>
+                    <label for="campaign_id" class="block text-sm font-bold text-gray-700 mb-2">Select a Campaign to Support</label>
+                    <div class="relative">
+                        <select name="campaign_id" id="campaign_id" required class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 border py-3 px-4 text-gray-700 appearance-none font-medium text-lg">
+                            <option value="" disabled selected>-- Choose a campaign --</option>
+                            {% for c in campaigns %}
+                            <option value="{{ c.id }}">{{ c.name }} (Goal: ₹{{ "{:,.0f}".format(c.goal_amount) }})</option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amount Input -->
+                <div>
+                    <label for="amount" class="block text-sm font-bold text-gray-700 mb-2">Donation Amount (₹)</label>
+                    <div class="relative rounded-xl shadow-sm">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                            <span class="text-gray-500 sm:text-xl font-bold">₹</span>
+                        </div>
+                        <input type="number" name="amount" id="amount" min="1" step="1" required placeholder="0.00" class="block w-full rounded-xl border-gray-300 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-xl py-3 border bg-gray-50 font-bold text-indigo-900">
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="pt-2">
+                    <label class="flex items-center gap-3 p-4 border border-gray-200 rounded-xl bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
+                        <input type="checkbox" name="anonymous" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <div>
+                            <span class="block text-sm font-bold text-gray-800">Keep my donation anonymous</span>
+                            <span class="block text-xs text-gray-500 mt-0.5">Your name will not appear on the public trust ledger.</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <div class="pt-6">
+                    <button type="submit" class="w-full py-4 px-6 rounded-xl shadow-lg text-white font-bold text-lg bg-gradient-to-r from-civic-navy to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition hover:-translate-y-0.5">
+                        Complete Secure Donation
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center space-x-6 text-gray-400">
+                <svg class="h-8" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 16H34M14 24H34M14 32H24" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p class="text-xs">Your donation is securely processed and immediately recorded in the immutable public trust ledger for absolute transparency.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

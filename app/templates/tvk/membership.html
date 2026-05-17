@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Membership{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto">
+  <h1 class="font-display text-3xl text-civic-navy mb-6">Digital membership</h1>
+  {% if card %}
+  <div class="rounded-2xl border-2 border-civic-gold/40 bg-gradient-to-br from-civic-navy to-slate-900 text-white p-8 shadow-xl">
+    <p class="text-civic-gold text-xs font-bold tracking-widest uppercase">TVK Singapadai</p>
+    <p class="font-display text-2xl mt-2">{{ profile.district or 'District TBD' }}</p>
+    <p class="text-sm text-slate-300 mt-4">Card: {{ card.card_number }}</p>
+    <p class="text-xs font-mono mt-4 break-all opacity-80">QR: {{ card.qr_payload }}</p>
+  </div>
+  {% endif %}
+  <h2 class="font-display text-lg mt-8 mb-2">Badges</h2>
+  <ul class="text-sm text-slate-700 space-y-1">
+    {% for b in badges %}<li>{{ b.label_en }} {% if b.label_ta %}({{ b.label_ta }}){% endif %}</li>{% else %}<li>No badges yet.</li>{% endfor %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: civic
+      POSTGRES_PASSWORD: civic
+      POSTGRES_DB: civic
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_CONFIG: production
+      SECRET_KEY: change-me-in-prod
+      JWT_SECRET_KEY: change-me-jwt
+      DATABASE_URL: postgresql+psycopg2://civic:civic@db:5432/civic
+    depends_on:
+      - db
+    command: >
+      sh -c "sleep 3 &&
+             flask --app run init-db &&
+             flask --app run seed-demo &&
+             gunicorn -k eventlet -w 1 -b 0.0.0.0:5000 --timeout 120 run:app"
+
+volumes:
+  pgdata:
