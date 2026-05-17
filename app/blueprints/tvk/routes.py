@@ -111,6 +111,21 @@ def hub():
     return render_template("tvk/hub.html", news=news)
 
 
+@bp.get("/html/events")
+def events():
+    return render_template("tvk/events.html")
+
+
+@bp.get("/html/tasks")
+def tasks():
+    return render_template("tvk/tasks.html")
+
+
+@bp.get("/html/gamification")
+def gamification():
+    return render_template("tvk/gamification.html")
+
+
 @bp.route("/register", methods=["GET", "POST"])
 @login_required
 def volunteer_register():

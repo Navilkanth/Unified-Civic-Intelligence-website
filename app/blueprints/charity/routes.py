@@ -247,3 +247,8 @@ def transparency():
     ledger = TrustLedgerEntry.query.order_by(TrustLedgerEntry.id.desc()).limit(30).all()
     return render_template("charity/transparency.html", campaigns=campaigns, total_raised=total_raised,
                            total_beneficiaries=total_beneficiaries, ledger=ledger)
+
+
+@bp.get("/html/volunteer-activity")
+def volunteer_activity():
+    return render_template("charity/volunteer_activity.html")
