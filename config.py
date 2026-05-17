@@ -21,15 +21,17 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        "sqlite:///civic_platform.db",
-    )
+    _db_url = os.environ.get("DATABASE_URL", "").strip()
+    if _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///civic_platform.db"
 
 
 class ProductionConfig(Config):
     DEBUG = False
     _db_url = os.environ.get("DATABASE_URL", "").strip()
+    if _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///civic_prod.db"
 
 
