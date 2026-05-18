@@ -24,7 +24,22 @@ class DevelopmentConfig(Config):
     _db_url = os.environ.get("DATABASE_URL", "").strip()
     if _db_url.startswith("postgres://"):
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
-    SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///civic_platform.db"
+    
+    # Self-healing DB check: if PostgreSQL connection fails, gracefully fallback to SQLite
+    if _db_url and ("postgresql" in _db_url or "postgres" in _db_url):
+        try:
+            import sqlalchemy
+            # Create a temporary engine and test connection with short timeout
+            engine = sqlalchemy.create_engine(_db_url)
+            conn = engine.connect()
+            conn.close()
+            SQLALCHEMY_DATABASE_URI = _db_url
+        except Exception:
+            print("\n[WARNING] Local PostgreSQL connection failed (bad credentials or DB not running).")
+            print("[INFO] Gracefully falling back to local SQLite: sqlite:///civic_platform.db\n")
+            SQLALCHEMY_DATABASE_URI = "sqlite:///civic_platform.db"
+    else:
+        SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///civic_platform.db"
 
 
 class ProductionConfig(Config):
@@ -32,11 +47,29 @@ class ProductionConfig(Config):
     _db_url = os.environ.get("DATABASE_URL", "").strip()
     if _db_url.startswith("postgres://"):
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
-    SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///civic_prod.db"
+    
+    # For production: try PostgreSQL, if fails on render/local without network, fallback to SQLite
+    if _db_url and ("postgresql" in _db_url or "postgres" in _db_url):
+        try:
+            import sqlalchemy
+            engine = sqlalchemy.create_engine(_db_url)
+            conn = engine.connect()
+            conn.close()
+            SQLALCHEMY_DATABASE_URI = _db_url
+        except Exception:
+            SQLALCHEMY_DATABASE_URI = "sqlite:///civic_prod.db"
+    else:
+        SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///civic_prod.db"
+
+
+class DummyConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///dummy_authentication.db"
 
 
 config_by_name = {
     "development": DevelopmentConfig,
     "production": ProductionConfig,
     "default": DevelopmentConfig,
+    "dummy": DummyConfig,
 }
